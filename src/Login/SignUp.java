@@ -39,13 +39,6 @@ public class SignUp extends javax.swing.JFrame {
     public SignUp() {
         
         initComponents();
-        /*try {
-           Connection con = conn();
-        } catch (SQLException ex) {
-            Logger.getLogger(SignUp.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(SignUp.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
         
     }
 
@@ -155,12 +148,7 @@ public class SignUp extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-/*private Connection conn() throws ClassNotFoundException, SQLException{
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection(" jdbc:mysql://localhost:3306/mysql?digitalCoin -peerdb", "root", "root");
-        return con;
-    }
-  */
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
  try {
@@ -170,6 +158,7 @@ public class SignUp extends javax.swing.JFrame {
         4. create file for public key and private key and save keys
         5. file name should start with username
      */
+        boolean success;
         String username = jTextField1.getText();
         String password = new String(jPasswordField1.getPassword());
         String confirm_password = new String(jPasswordField2.getPassword());
@@ -210,13 +199,29 @@ public class SignUp extends javax.swing.JFrame {
                 String insert="INSERT INTO digitalCoin.login VALUES('"+username+"','"+result+"')";
                 stmt.executeUpdate(insert); 
                 JOptionPane.showMessageDialog(null,"Inserted Successfully!");
-                File dir=new File("/home/ameya/Mtech/learn/KEYS/");
+                String currentDir = System.getProperty("user.dir");   
+                File dir=new File(currentDir+"/Keys");
+             
+                System.out.println(dir);
+                if(!dir.exists()) {
+                    success =  dir.mkdirs();
+                    if (success) {
+                        System.out.printf("Successfully created new directory : %s%n", dir);
+                    } else {
+                        System.out.printf("Failed to create new directory: %s%n", dir);
+                    }
+                }
+                else {
+                      System.out.println("Directory already exists ...");
+                }
+                	
+                
                 KeyPairGenerator dsa =  KeyPairGenerator.getInstance("DSA");
                 SecureRandom random = new SecureRandom();
                 dsa.initialize(1024, random);
                 KeyPair keypair = dsa.generateKeyPair();
-                String fileName=username;
-                File public_file=new File(dir,fileName+"publickey.txt");
+                String owner =username;
+                File public_file=new File(dir,owner+"publickey.txt");
                 if(!public_file.exists()){
                     public_file.createNewFile();
                 }   
@@ -236,7 +241,7 @@ public class SignUp extends javax.swing.JFrame {
                 byte[] abc = privateKey.getEncoded();
                 byte[] encrypted = cipher.doFinal(abc);
                 System.out.println("enc="+(new String(encrypted)));
-                File private_file=new File(dir,fileName+"privatekey.txt");
+                File private_file=new File(dir,"privatekey.txt");
                 if(!private_file.exists()){
                     private_file.createNewFile();
                 }
@@ -248,12 +253,16 @@ public class SignUp extends javax.swing.JFrame {
               
             } 
             else {
+                
                 jPasswordField1.setText("");   
                 jPasswordField2.setText("");   
                 JOptionPane.showMessageDialog(null,"Password and confirm password doesnot match");
             }
         }   
-            
+        jTextField1.setText("");
+        jPasswordField1.setText("");   
+        jPasswordField2.setText("");    
+         
         }
         catch(NoSuchAlgorithmException | IOException e){
 		e.printStackTrace();
@@ -274,11 +283,13 @@ public class SignUp extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
+            
                 String username = jTextField1.getText();
                 String fileName=username;
-                File dir=new File("/home/ameya/Mtech/learn/KEYS/");
-                  File file_read = new File(dir,fileName+"publickey.txt");
-           // File file_read = new File(public_file);
+                String currentDir = System.getProperty("user.dir");   
+                File dir=new File(currentDir+"/Keys/");
+                File file_read = new File(dir,fileName+"publickey.txt");
+          
 		if (file_read.exists()) {
  
 			if (Desktop.isDesktopSupported()) {
@@ -304,9 +315,10 @@ public class SignUp extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        
-              new Sample().setVisible(true);
-              new SignUp().setVisible(false);
+              //new SignUp().setVisible(false);
+                dispose();
+                new Sample().setVisible(true);
+             
 // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
