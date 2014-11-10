@@ -11,12 +11,20 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.Desktop;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.channels.FileChannel;
+import java.nio.file.Path;
+
+  //  import java.lang.Object.org.apache.commons.io.FileUtils;//
 
 /**
  *
@@ -58,6 +66,11 @@ public class ReceiverCertificate extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jButton1.setText("Download");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Accept");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -222,8 +235,152 @@ public class ReceiverCertificate extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+         try {
+             String Recipient_name = jTextField3.getText();
+         
+            int amount = new Integer(jTextField4.getText());
+  String currentDir = System.getProperty("user.dir");   
+                    String current = currentDir+Recipient_name+"/SamplePDF.pdf";  
+                    System.out.println("Current dir using System:" +current);  
+                    File file_read = new File(currentDir );
+                    if (file_read.exists()) {
+                        Desktop desktop = Desktop.getDesktop();
+                        if (desktop.isSupported(Desktop.Action.OPEN)) {
+                           // if (Desktop.isDesktopSupported()) {
+				Desktop.getDesktop().open(file_read);
+                        } else {
+				System.out.println("Awt Desktop is not supported!");
+                        }
+                    } else {    
+ 
+			System.out.println("File is not exists");
+ 
+                    }
+ 
+		    System.out.println("Done");
+                    
+            OutputStream file = new FileOutputStream(new File(Recipient_name+"Response.pdf"));
+            Document document = new Document();
+	    PdfWriter.getInstance(document, file);
 
+	            document.open();
+	          //  document.add(new Paragraph("First iText PDF"));
+	          //  document.add(new Paragraph(new Date().toString()));
+
+	           /* document.addAuthor("Ameya");
+	            document.addCreationDate();
+	            document.addCreator("JavaBeat");
+	            document.addTitle("Transaction");
+                    */
+                    Paragraph paragraph = new Paragraph();
+                    Chunk chunk = new Chunk("Recipient's Name: "+Recipient_name);
+                       paragraph.add(new Paragraph(" "));
+		   // chunk.setUnderline(+1f,-2f);//1st co-ordinate is for line width,2nd is space between
+		    Chunk chunk1 = new Chunk("Sender's Name: "+this.sender_name);
+                       paragraph.add(new Paragraph(" "));
+                     Chunk chunk2 = new Chunk("Amount: "+amount);
+                        paragraph.add(new Paragraph(" "));
+                        Chunk chunk3 = new Chunk("Sorry, I dont want to continue this above transaction");  
+                         paragraph.add(new Paragraph(" "));
+		   // chunk1.setUnderline(+4f,-8f);
+		   // chunk1.setBackground(new BaseColor (17, 46, 193));  
+                    	document.add(chunk);
+                        document.add(chunk1);
+                        document.add(chunk2);
+                        document.add(chunk3);
+	            //     Font.BOLD));
+                      paragraph.add(new Paragraph(" "));
+	            //paragraph.add("Test Paragraph");
+	            paragraph.add(new Paragraph(" "));
+	            document.add(paragraph);
+
+	            document.close();
+	            file.close();
+    }//GEN-LAST:event_jButton3ActionPerformed
+ catch(Exception e )
+ {
+ }
+ }
+    public static void copyFolder(File src, File dest)
+    {
+        try { 
+    	if(src.isDirectory()){
+ 		if(!dest.exists()){
+    		   dest.mkdir();
+    		 
+    		String files[] = src.list();
+ 
+    		for (String file : files) {
+    		  
+    		   File srcFile = new File(src, file);
+    		   File destFile = new File(dest, file);
+    		   
+    		   copyFolder(srcFile,destFile);
+    		}
+ 
+    	}else{
+    		
+    		InputStream in = new FileInputStream(src);
+    	        OutputStream out = new FileOutputStream(dest); 
+ 
+    	        byte[] buffer = new byte[1024];
+ 
+    	        int length;
+    	       
+    	        while ((length = in.read(buffer)) > 0){
+    	    	   out.write(buffer, 0, length);
+    	        }
+ 
+    	        in.close();
+    	        out.close();
+    	        
+    	}
+    }
+        }
+        catch(Exception e)
+        {
+                
+        }
+        }
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    try {
+        EmailDownload ed = new EmailDownload();
+        dispose();
+        ed.setVisible(true);
+        
+        
+      /*  File srcFolder = new File("/home/ameya/Downloads/keys/");
+        File destFolder = new File("/home/ameya/Mtech/learn/java/keys/");
+        copyFolder(srcFolder,destFolder);
+        String files[] = destFolder.list();
+        for (String file : files) {
+           // String fname = file.getName();
+            int pos = file.lastIndexOf(".");
+            if (pos > 0) 
+                file = file.substring(0, pos);
+        	BufferedReader br = new BufferedReader(new FileReader(info_file));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if(!line.contains(file))
+                    {
+                        FileWriter fileWritter = new FileWriter(info_file,true);
+                         bufferWritter = new BufferedWriter(fileWritter);
+                        bufferWritter.write(file+":"+file+"publickey.txt");
+                       
+		                    }     		
+            		
+                }
+                br.close();
+         }
+      */
+        
+    }        
+catch(Exception e)
+{
+}     
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
+  
     /**
      * @param args the command line arguments
      */
