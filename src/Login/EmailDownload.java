@@ -8,14 +8,17 @@ package Login;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.mail.*;
+import javax.mail.internet.InternetAddress;
 
 /**
  *
@@ -158,7 +161,8 @@ public class EmailDownload extends javax.swing.JFrame {
             int i,n;
             System.out.println("entered");
             for(i = 0; i<message.length; i++){
-                System.out.println(i + ": " + message[i].getFrom()[0]+ "\t" + message[i].getSubject());
+                InternetAddress sender_name =(InternetAddress) message[i].getFrom()[0];
+                System.out.println(i + ": " +  sender_name+ "\t" + message[i].getSubject());
                 System.out.println("entered inside the loop");
                 String ans = message[i].getSubject();
                 ans=ans.toLowerCase();
@@ -214,6 +218,7 @@ catch(Exception e)
               String type = ".txt";
               if(filename.contains(type))
                       directory_name = new File(currentDir+"/keys");
+                      
               else
                    directory_name = new File(currentDir+"/transaction");
              System.out.println(directory_name);  
@@ -251,6 +256,14 @@ catch(Exception e)
         bis.close();
         
         System.out.println("done");
+        BufferedWriter bufferWritter = null;
+        File info_file = new File("/home/ameya/Mtech/learn/java/keys/peer_info");
+        if (!info_file.exists()) 
+                    info_file.createNewFile();
+        FileWriter fileWritter = new FileWriter(info_file,true);
+        bufferWritter = new BufferedWriter(fileWritter);
+        bufferWritter.write(file+":"+file+"publickey.txt");
+        bufferWritter.close();
 }
 catch(Exception e)
 {
